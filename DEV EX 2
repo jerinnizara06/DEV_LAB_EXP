@@ -1,0 +1,54 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from wordcloud import WordCloud
+url = "https://archive.ics.uci.edu/ml/machine-learning-databases/spambase/spambase.data"
+columns = [
+    "word_freq_make", "word_freq_address", "word_freq_all", "word_freq_3d", "word_freq_our", 
+    "word_freq_over", "word_freq_remove", "word_freq_internet", "word_freq_order", "word_freq_mail", 
+    "word_freq_receive", "word_freq_will", "word_freq_people", "word_freq_report", "word_freq_addresses", 
+    "word_freq_free", "word_freq_business", "word_freq_email", "word_freq_you", "word_freq_credit", 
+    "word_freq_your", "word_freq_font", "word_freq_000", "word_freq_money", "word_freq_hp", 
+    "word_freq_hpl", "word_freq_george", "word_freq_650", "word_freq_lab", "word_freq_labs", 
+    "word_freq_telnet", "word_freq_857", "word_freq_data", "word_freq_415", "word_freq_85", 
+    "word_freq_technology", "word_freq_1999", "word_freq_parts", "word_freq_pm", "word_freq_direct", 
+    "word_freq_cs", "word_freq_meeting", "word_freq_original", "word_freq_project", "word_freq_re", 
+    "word_freq_edu", "word_freq_table", "word_freq_conference", "char_freq_;", "char_freq_(", 
+    "char_freq_[", "char_freq_!", "char_freq_$", "char_freq_#", "capital_run_length_average", 
+    "capital_run_length_longest", "capital_run_length_total", "Label"
+]
+df = pd.read_csv(url, names=columns)
+df['Label'] = df['Label'].map({1: "Spam", 0: "Ham"})
+df['Msg_Length'] = df.iloc[:, :-1].sum(axis=1)
+plt.figure(figsize=(10,5))
+sns.histplot(df['Msg_Length'], bins=30, kde=True)
+plt.title("Distribution of Message Length")
+plt.xlabel("Message Length")
+plt.ylabel("Frequency")
+plt.show()
+plt.figure(figsize=(8,4))
+sns.countplot(x=df['Label'], palette=['blue', 'red'])
+plt.title("Distribution of Spam vs Ham Messages")
+plt.xticks(ticks=[0, 1], labels=["Ham", "Spam"])
+plt.ylabel("Count")
+plt.show()
+stats = df['Msg_Length'].describe()[['count', 'mean', 'std', 'min']]
+print("Message Length Statistics:\n", stats)
+word_columns = [col for col in df.columns if "word_freq" in col]
+spam_words = ' '.join(word for col in word_columns for word in [col] * int(df[df['Label'] == "Spam"][col].sum()))
+ham_words = ' '.join(word for col in word_columns for word in [col] * int(df[df['Label'] == "Ham"][col].sum()))
+spam_wordcloud = WordCloud(width=600, height=300, background_color="black").generate(spam_words)
+ham_wordcloud = WordCloud(width=600, height=300, background_color="white").generate(ham_words)
+
+plt.figure(figsize=(12,5))
+plt.subplot(1,2,1)
+plt.imshow(spam_wordcloud, interpolation='bilinear')
+plt.title("Spam Word Cloud")
+plt.axis("off")
+
+plt.subplot(1,2,2)
+plt.imshow(ham_wordcloud, interpolation='bilinear')
+plt.title("Ham Word Cloud")
+plt.axis("off")
+plt.show()
