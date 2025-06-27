@@ -1,0 +1,33 @@
+# PART (a): Group temperature data by city and month, then find city with highest summer total
+
+import pandas as pd
+
+# Sample temperature dataset
+data_a = {
+    'City': ['Chennai', 'Chennai', 'Delhi', 'Delhi', 'Mumbai', 'Mumbai', 'Chennai', 'Delhi', 'Mumbai'],
+    'Date': ['2024-06-10', '2024-07-15', '2024-06-17', '2024-07-25', '2024-08-05', '2024-06-20', '2024-08-12', '2024-06-30', '2024-07-11'],
+    'Temperature': [38, 40, 42, 41, 35, 33, 39, 37, 36]
+}
+df_a = pd.DataFrame(data_a)
+
+# Convert 'Date' to datetime format
+df_a['Date'] = pd.to_datetime(df_a['Date'])
+
+# Extract full month name
+df_a['Month'] = df_a['Date'].dt.strftime('%B')
+
+# Group by City and Month, then compute total temperature
+grouped_temp = df_a.groupby(['City', 'Month'])['Temperature'].sum().reset_index()
+
+# Pivot to create month-wise summary table
+pivot_temp = grouped_temp.pivot(index='City', columns='Month', values='Temperature').fillna(0)
+print("Month-wise Temperature Summary Table:")
+print(pivot_temp)
+
+# Add Summer Total (June, July, August)
+summer_months = ['June', 'July', 'August']
+pivot_temp['Summer_Total'] = pivot_temp[summer_months].sum(axis=1)
+
+# Identify the city with the highest summer temperature
+hottest_city = pivot_temp['Summer_Total'].idxmax()
+print(f"\nCity with the highest total summer temperature: {hottest_city}")
