@@ -1,0 +1,24 @@
+import pandas as pd
+
+# Sample employee work hours dataset
+data_b = {
+    'Employee': ['Alice', 'Bob', 'Charlie', 'David', 'Eve', 'Frank', 'Grace', 'Heidi', 'Ivan'],
+    'Department': ['HR', 'IT', 'HR', 'Sales', 'IT', 'HR', 'Sales', 'Sales', 'IT'],
+    'Hours_Worked': [40, 50, 38, 45, 55, 42, 47, 44, 60]
+}
+df_b = pd.DataFrame(data_b)
+
+# Group by Department and calculate total and average hours
+grouped_hours = df_b.groupby('Department').agg(
+    Total_Hours=pd.NamedAgg(column='Hours_Worked', aggfunc='sum'),
+    Average_Hours=pd.NamedAgg(column='Hours_Worked', aggfunc='mean')
+).reset_index()
+
+# Create pivot-style summary report
+pivot_hours = grouped_hours.pivot_table(index='Department', values=['Total_Hours', 'Average_Hours'])
+print("Department-wise Work Hours Summary:")
+print(pivot_hours)
+
+# Identify the department with highest average working hours
+most_hardworking_dept = pivot_hours['Average_Hours'].idxmax()
+print(f"\nDepartment with highest average working hours: {most_hardworking_dept}")
