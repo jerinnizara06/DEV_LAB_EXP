@@ -1,0 +1,66 @@
+library(dplyr)
+
+# Step 2: Load sample data
+data <- mtcars  # Built-in dataset
+head(data)
+
+# Step 3: Rename row names to a column (optional for easier filtering)
+data <- tibble::rownames_to_column(data, var = "Car")
+
+# Step 4: View structure of the dataset
+str(data)
+
+# -----------------------------
+# Variable (Column) Filtering
+# -----------------------------
+
+# 1. Select specific columns
+selected_data <- select(data, Car, mpg, cyl, hp)
+print("Selected Columns:")
+print(head(selected_data))
+
+# 2. Remove unwanted columns
+removed_columns <- select(data, -drat, -qsec)
+print("After Removing 'drat' and 'qsec':")
+print(head(removed_columns))
+
+# 3. Rename columns
+renamed_data <- rename(data, MilesPerGallon = mpg, HorsePower = hp)
+print("Renamed Columns:")
+print(head(renamed_data))
+
+# -----------------------------
+# Row Filtering
+# -----------------------------
+
+# 4. Filter rows based on condition: cars with mpg > 20
+mpg_filtered <- filter(data, mpg > 20)
+print("Cars with mpg > 20:")
+print(mpg_filtered)
+
+# 5. Filter rows with multiple conditions: mpg > 20 and cyl == 4
+multi_condition <- filter(data, mpg > 20 & cyl == 4)
+print("Cars with mpg > 20 and 4 cylinders:")
+print(multi_condition)
+
+# 6. Filter rows using %in% operator
+cyl_filtered <- filter(data, cyl %in% c(4, 6))
+print("Cars with 4 or 6 cylinders:")
+print(cyl_filtered)
+
+# 7. Arrange rows in descending order of horsepower
+arranged_data <- arrange(data, desc(hp))
+print("Data arranged by descending horsepower:")
+print(head(arranged_data))
+
+# -----------------------------
+# Combining Filters
+# -----------------------------
+
+# 8. Chained filter and select
+cleaned_data <- data %>%
+  filter(mpg > 20, cyl == 4) %>%
+  select(Car, mpg, cyl, hp)
+
+print("Cleaned and Filtered Data:")
+print(cleaned_data)
