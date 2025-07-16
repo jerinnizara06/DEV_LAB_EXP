@@ -1,0 +1,63 @@
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Step 2: Load an in-built dataset
+df = sns.load_dataset('tips')  # Dataset about restaurant tips
+
+# Step 3: Set a style for plots
+sns.set(style="whitegrid")
+
+# Step 4: Various Seaborn Visualizations
+
+# 1. Histogram
+plt.figure(figsize=(6, 4))
+sns.histplot(df['total_bill'], kde=True, color='skyblue')
+plt.title('Histogram of Total Bill')
+plt.xlabel('Total Bill')
+plt.ylabel('Frequency')
+plt.show()
+
+# 2. Scatter Plot
+plt.figure(figsize=(6, 4))
+sns.scatterplot(x='total_bill', y='tip', data=df, hue='sex')
+plt.title('Scatter Plot: Total Bill vs Tip')
+plt.xlabel('Total Bill')
+plt.ylabel('Tip')
+plt.show()
+
+# 3. Box Plot
+plt.figure(figsize=(6, 4))
+sns.boxplot(x='day', y='total_bill', data=df, palette='pastel')
+plt.title('Box Plot: Total Bill by Day')
+plt.xlabel('Day')
+plt.ylabel('Total Bill')
+plt.show()
+
+# 4. Violin Plot
+plt.figure(figsize=(6, 4))
+sns.violinplot(x='day', y='tip', data=df, hue='sex', split=True)
+plt.title('Violin Plot: Tip by Day and Gender')
+plt.xlabel('Day')
+plt.ylabel('Tip')
+plt.show()
+
+# 5. Pair Plot
+sns.pairplot(df, hue='sex')
+plt.suptitle('Pair Plot of Tips Dataset', y=1.02)
+plt.show()
+
+# 6. Heatmap (correlation matrix - fixed version)
+plt.figure(figsize=(8, 6))
+numeric_df = df.select_dtypes(include='number')  # Select only numeric columns
+sns.heatmap(numeric_df.corr(), annot=True, cmap='coolwarm', linewidths=0.5)
+plt.title('Heatmap: Correlation Matrix')
+plt.show()
+
+# 7. Bar Plot
+plt.figure(figsize=(6, 4))
+sns.barplot(x='day', y='total_bill', data=df, ci=None, palette='muted')
+plt.title('Bar Plot: Average Total Bill per Day')
+plt.xlabel('Day')
+plt.ylabel('Average Total Bill')
+plt.show()
