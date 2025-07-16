@@ -1,4 +1,3 @@
-# PART (a): Group temperature data by city and month, then find city with highest summer total
 
 import pandas as pd
 
